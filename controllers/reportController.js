@@ -1,4 +1,47 @@
-const { ReportLPJ, Proposal } = require('../models');
+const { ReportLPJ, Proposal, User } = require('../models');
+
+// Get reports for current user
+exports.getUserReports = async (req, res) => {
+  try {
+    const reports = await ReportLPJ.findAll({
+      include: [
+        {
+          model: Proposal,
+          where: { userId: req.user.id },
+          attributes: ['id', 'judul', 'organisasi', 'dana_diajukan', 'status']
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+    return res.json(reports);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'server error' });
+  }
+};
+
+// Get all reports (admin only)
+exports.getAllReports = async (req, res) => {
+  try {
+    const reports = await ReportLPJ.findAll({
+      include: [
+        {
+          model: Proposal,
+          attributes: ['id', 'judul', 'organisasi', 'dana_diajukan', 'status'],
+          include: [{
+            model: User,
+            attributes: ['id', 'username', 'email']
+          }]
+        }
+      ],
+      order: [['createdAt', 'DESC']]
+    });
+    return res.json(reports);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'server error' });
+  }
+};
 
 exports.uploadLPJ = async (req, res) => {
   try {

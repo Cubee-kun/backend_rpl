@@ -5,8 +5,11 @@ module.exports = (sequelize, DataTypes) => {
     organizationId: { type: DataTypes.INTEGER, allowNull: true },
     judul: { type: DataTypes.STRING, allowNull: false },
     deskripsi: { type: DataTypes.TEXT },
-    status: { type: DataTypes.ENUM('pending','disetujui','revisi','selesai'), defaultValue: 'pending' },
+    status: { type: DataTypes.ENUM('pending','approved','rejected','revision'), defaultValue: 'pending' },
     dana_diajukan: { type: DataTypes.DECIMAL(12,2), defaultValue: 0 },
+    tgl_pelaksanaan: { type: DataTypes.DATE, allowNull: true },
+    organisasi: { type: DataTypes.STRING, allowNull: true },
+    penanggung_jawab: { type: DataTypes.STRING, allowNull: true },
   });
 
   Proposal.associate = (models) => {
