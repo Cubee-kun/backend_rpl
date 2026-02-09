@@ -4,6 +4,9 @@ const auth = require('../middlewares/auth');
 const rbac = require('../middlewares/rbac');
 const proposalController = require('../controllers/proposalController');
 
+// Public endpoint for landing page
+router.get('/public', proposalController.getPublicProposals);
+
 router.post('/', auth, rbac('organisasi'), proposalController.createProposal);
 router.get('/me', auth, proposalController.listUserProposals);
 

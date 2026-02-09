@@ -66,3 +66,35 @@ exports.uploadLPJ = async (req, res) => {
     return res.status(500).json({ message: 'server error' });
   }
 };
+
+exports.getPublicReports = async (req, res) => {
+  try {
+    const reports = await ReportLPJ.findAll({
+      attributes: ['id', 'total_dana_terpakai', 'createdAt'],
+      include: [
+        {
+          model: Proposal,
+          attributes: ['id', 'judul', 'deskripsi', 'dana_diajukan', 'organisasi']
+        }
+      ],
+      order: [['createdAt', 'DESC']],
+      limit: 20 // Limit untuk performa
+    });
+    
+    // Format data untuk frontend
+    const formattedReports = reports.map(report => ({
+      id: report.id,
+      title: report.Proposal?.judul || 'Laporan LPJ',
+      description: report.Proposal?.deskripsi || '',
+      budgetUsed: report.total_dana_terpakai,
+      budgetTotal: report.Proposal?.dana_diajukan,
+      organization: report.Proposal?.organisasi,
+      createdAt: report.createdAt
+    }));
+    
+    return res.json(formattedReports);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'server error' });
+  }
+};

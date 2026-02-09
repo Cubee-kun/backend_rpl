@@ -89,3 +89,28 @@ exports.updateProposalStatus = async (req, res) => {
     return res.status(500).json({ message: 'server error' });
   }
 };
+
+exports.getPublicProposals = async (req, res) => {
+  try {
+    const proposals = await Proposal.findAll({
+      attributes: ['id', 'judul', 'deskripsi', 'dana_diajukan', 'status', 'createdAt'],
+      order: [['createdAt', 'DESC']],
+      limit: 20 // Limit untuk performa
+    });
+    
+    // Format data untuk frontend
+    const formattedProposals = proposals.map(proposal => ({
+      id: proposal.id,
+      title: proposal.judul,
+      description: proposal.deskripsi,
+      budget: proposal.dana_diajukan,
+      status: proposal.status,
+      createdAt: proposal.createdAt
+    }));
+    
+    return res.json(formattedProposals);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'server error' });
+  }
+};

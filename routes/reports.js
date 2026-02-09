@@ -5,6 +5,9 @@ const upload = require('../middlewares/upload');
 const reportController = require('../controllers/reportController');
 const rbac = require('../middlewares/rbac');
 
+// Public endpoint for landing page
+router.get('/public', reportController.getPublicReports);
+
 // Get reports
 router.get('/me', auth, reportController.getUserReports);
 router.get('/', auth, rbac(['admin']), reportController.getAllReports);
